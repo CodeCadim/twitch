@@ -1,0 +1,3 @@
+counter/node_modules
+*.map
+counter/package-lock.json

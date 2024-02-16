@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+tmux send-keys 'vi doing.md -O motd.md' C-m \; \
+	split-window -v -p 30 \; send-keys 'cd ~/projects/gotwitch && go run .' C-m \; \

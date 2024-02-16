@@ -1,0 +1,14 @@
+{
+  "name": "waiting_page",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node esbuild.js -w",
+	"build": "node esbuild.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.18.17",
+    "esbuild-svelte": "^0.7.4",
+    "svelte": "^4.1.1"
+  }
+}
