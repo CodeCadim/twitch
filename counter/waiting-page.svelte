@@ -4,7 +4,7 @@
 	import Clock from "./clock.svelte";
 
 	// Début du stream = Date et Heure de référence
-	const ReferenceTime = new Date("2024-02-16T15:00:00").getTime();
+	const ReferenceTime = new Date("2025-12-10T11:00:00").getTime();
 
 	const RemainingPhrase = "CodeCadim démarre dans";
 	const DefaultPhrase = "CodeCadim";

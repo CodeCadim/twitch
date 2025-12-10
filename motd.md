@@ -1,1 +1,1 @@
-   Bienvenue ! Posez vos questions dans le chat !        Permanence du codeur          
+CodeCadim   DÉV   GO  SVELTE  NEOVIM  DOCKER   LINUX 󰌽 
