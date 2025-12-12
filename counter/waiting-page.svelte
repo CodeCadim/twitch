@@ -3,8 +3,22 @@
 <script>
 	import Clock from "./clock.svelte";
 
-	// Début du stream = Date et Heure de référence
-	const ReferenceTime = new Date("2025-12-10T11:00:00").getTime();
+	const today = new Date();
+
+	// wednesday at 11h
+	const nextWednesdayStreamDate = getNextDayOfWeek(today, 11, 0, 0, 3); // wednesday
+	console.log(nextWednesdayStreamDate);
+
+	// thursday at 17h
+	const nextThursdayStreamDate = getNextDayOfWeek(today, 17, 0, 0, 4); // thursday
+	console.log(nextThursdayStreamDate);
+
+	let nextStream;
+	if (nextThursdayStreamDate > nextWednesdayStreamDate) {
+		nextStream = nextWednesdayStreamDate;
+	} else {
+		nextStream = nextThursdayStreamDate;
+	}
 
 	const RemainingPhrase = "CodeCadim démarre dans";
 	const DefaultPhrase = "CodeCadim";
@@ -24,10 +38,12 @@
 		RemainingTimeString = "";
 
 		var now = new Date().getTime();
-		var delta = ReferenceTime - now;
-		if (delta >= 0) {
+		var delta = nextStream - now; // la différence est en millisecondes
+
+		// astuce : 36e5 représente 60*60*1000 soit 1h exprimée en millisecondes
+		if (delta >= 0 && delta < 24*36e5) {
 			var hours = Math.floor(
-				(delta % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+				(delta % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
 			);
 			var minutes = Math.floor((delta % (1000 * 60 * 60)) / (1000 * 60));
 			var seconds = Math.floor((delta % (1000 * 60)) / 1000);
@@ -43,6 +59,29 @@
 					" " + seconds + " seconde" + (seconds > 1 ? "s" : "");
 		}
 	}, 1000);
+	/**
+	 * Gets the date of the next occurrence of a specific day of the week.
+	 * @param {Date} startDate The date to start searching from.
+	 * @param {number} dayOfWeek The target day of the week (0=Sunday, 1=Monday, ...).
+	 * @returns {Date} The date of the next occurrence of that day.
+	 */
+	function getNextDayOfWeek(startDate, startHour, startMin, StartSec, dayOfWeek) {
+		// Clone the date so we don't mutate the original
+		const date = new Date(startDate.getTime());
+		date.setHours(startHour,startMin,StartSec);
+
+		const currentDay = date.getDay();
+		let daysToAdd = dayOfWeek - currentDay;
+
+		// If the day is today or has already passed this week, add 7 days
+		if (daysToAdd <= 0) {
+			daysToAdd += 7;
+		}
+
+		date.setDate(date.getDate() + daysToAdd);
+
+		return date;
+	}
 </script>
 
 <main style:background-image="url({picsum_url})">
@@ -51,12 +90,16 @@
 		<Clock />
 	</div>
 	<div id="text">
+		{DefaultPhrase}
 		{#if RemainingTimeString}
 			<h1>{RemainingPhrase}</h1>
 			<div id="clocktext">{RemainingTimeString}</div>
 		{:else}
 			<h1>
-				{DefaultPhrase}
+				Prochain Stream<br/>
+				{nextStream.toLocaleDateString(undefined,{weekday:"long",month:"long",day:"numeric"})}
+				à
+				{nextStream.toLocaleTimeString(undefined,{hour:"numeric"})}
 			</h1>
 		{/if}
 	</div>
@@ -80,7 +123,7 @@
 		left: 0;
 		min-height: 100vh;
 		min-width: 100%;
-		background-color: rgb(85,0,255,0.2);
+		background-color: rgb(85, 0, 255, 0.2);
 	}
 	#clocktext {
 		z-index: 99999;
@@ -90,7 +133,6 @@
 	}
 	#clockcontainer {
 		z-index: 99999;
-		max-width: 250px;
 	}
 	#text {
 		z-index: 99999;
@@ -98,6 +140,6 @@
 		padding: 3rem;
 		color: #55007f;
 		font-weight: bolder;
-		background-color: rgb(255,255,255,0.3);
+		background-color: rgb(255, 255, 255, 0.3);
 	}
 </style>
